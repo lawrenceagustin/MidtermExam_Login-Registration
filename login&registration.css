@@ -1,0 +1,36 @@
+.container{
+  width: 50%;
+  margin: auto;
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 50px;
+  text-align: center;
+}
+
+.username{
+  width: 30%;
+  border-radius: 20px;
+}
+
+.password{
+  width: 30%;
+  border-radius: 20px;
+}
+
+.login{
+  width: 20%;
+  border-radius: 20px;
+}
+
+.returnBtn{
+  width: 20%;
+  padding: 10px;
+  background-color: #b0b8b1;
+  color: rgb(0, 0, 0);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+  display: inline-block
+}
+
