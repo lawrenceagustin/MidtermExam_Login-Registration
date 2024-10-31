@@ -31,8 +31,7 @@ CREATE TABLE users (
     first_name VARCHAR(32),
     last_name VARCHAR(32),
     age INT,
-    birthdate DATE,
-    home_address VARCHAR(512),
+    birthdate DATE
     date_registered TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

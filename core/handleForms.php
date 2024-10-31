@@ -89,30 +89,39 @@ function sanitizeInput($input) {
 
 if (isset($_POST['registerUserBtn'])) {
 	$username = sanitizeInput($_POST['username']);
-	$password = $_POST['password'];
+	$password = $_POST['password']; // Raw password input
 	$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 	$first_name = sanitizeInput($_POST['first_name']);
 	$last_name = sanitizeInput($_POST['last_name']);
 	$age = $_POST['age'];
 	$birthdate = $_POST['birthdate'];
 
-	$function = addUser($pdo, $username, $password, $hashed_password, $first_name, $last_name, $age, $birthdate);
-	if ($function == "registrationSuccess") {
-			header("Location: ../login.php");
-	} elseif ($function == "UsernameAlreadyExists") {
-			$_SESSION['message'] = "Username already exists! Please choose a different username!";
-			header("Location: ../register.php");
-	} elseif ($function == "UserAlreadyExists") {
-			$_SESSION['message'] = "User already exists! Please edit your existing account instead!";
-			header("Location: ../register.php");
-	} elseif ($function == "InvalidPassword") {
-			$_SESSION['message'] = "Password is not strong enough! Make sure it is 8 characters long, has uppercase and lowercase characters, and includes numbers.";
-			header("Location: ../register.php");
-	} else {
-			echo "<h2>User addition failed.</h2>";
-			echo '<a href="../register.php">';
-			echo '<input type="submit" id="returnHomeButton" value="Return to register page" style="padding: 6px 8px; margin: 8px 2px;">';
-			echo '</a>';
+	// Pass the raw password to addUser for validation
+	$function = addUser($pdo, $username, $hashed_password, $first_name, $last_name, $age, $birthdate, $password);
+	
+	// Handling registration response
+	switch ($function) {
+			case "registrationSuccess":
+					header("Location: ../login.php");
+					exit;
+			case "UsernameAlreadyExists":
+					$_SESSION['message'] = "The username is already taken! Please select a different one!";
+					header("Location: ../register.php");
+					exit;
+			case "UserAlreadyExists":
+					$_SESSION['message'] = "The user already exists! Please update your existing account instead!";
+					header("Location: ../register.php");
+					exit;
+			case "InvalidPassword":
+					$_SESSION['message'] = "Password is not strong enough! Make sure it is 8 characters long, has uppercase and lowercase characters, and includes numbers.";
+					header("Location: ../register.php");
+					exit;
+			default:
+					echo "<h2>User addition failed.</h2>";
+					echo '<a href="../register.php">';
+					echo '<input type="submit" id="returnHomeButton" value="Return to register page" style="padding: 6px 8px; margin: 8px 2px;">';
+					echo '</a>';
+					break;
 	} 
 }
 

@@ -8,21 +8,9 @@ require_once 'core/handleForms.php';
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Register Account</title>
-	<style>
-		body {
-		font-family: "Arial";
-		}
-		input {
-			font-size: 1.5em;
-			height: 50px;
-			width: 200px;
-		}
-		table, th, td {
-			border:1px solid black;
-		}
-	</style>
 </head>
 <body>
+	<div class="container">
 	<h1>Register here!</h1>
 	<?php if (isset($_SESSION['message'])) { ?>
 		<h1 style="color: red;"><?php echo $_SESSION['message']; ?></h1>
@@ -47,8 +35,10 @@ require_once 'core/handleForms.php';
 
 			<label for="birthdate">Birthdate</label>
       <input type="date" name="birthdate" id="birthdate" min="1970-01-01" max="2024-12-31" required> <br>
-			<input type="submit" name="registerUserBtn">
+			<input type="submit" name="registerUserBtn"> <br>
+			<input type="submit" value="Back" onclick="window.location.href='login.php'">
 		</p>
+		<div>
 	</form>
 </body>
 </html>

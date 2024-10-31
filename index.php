@@ -20,7 +20,7 @@ if (!isset($_SESSION['username'])) {
 		<h1 style="color: red;"><?php echo $_SESSION['message']; ?></h1>
 	<?php } unset($_SESSION['message']); ?>
 
-	<h1>Welcome To Car Rental Management System. Add new Cars to the fleet!</h1>
+	<h1 class="title">Welcome To Car Rental Management System. Add new Cars to the fleet!</h1>
 
 	<?php if (isset($_SESSION['username'])) { ?>
 		<h1>Hello there!! <?php echo $_SESSION['username']; ?></h1>
@@ -70,7 +70,7 @@ if (!isset($_SESSION['username'])) {
 
 		<?php $getAllCars = getAllCars($pdo); ?>
 	<?php foreach ($getAllCars as $row) { ?>
-	<div class="container" style="border-style: solid; width: 50%; height: 300px; margin-top: 20px;">
+	<div class="container" style="border-style: solid; width: 20%; height: 290px; margin-top: 20px;">
 		<h3>Brand: <?php echo $row['brand']; ?></h3>
 		<h3>Model: <?php echo $row['model']; ?></h3>
 		<h3>Year: <?php echo $row['gen']; ?></h3>

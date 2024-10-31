@@ -27,6 +27,19 @@ function getNewestCarID($pdo) {
 		}
 }
 
+function getNewestRentalID($pdo) {
+	$query = "SELECT rental_id
+			FROM rentals
+			ORDER BY rental_id DESC
+    		LIMIT 1;";
+		$statement = $pdo -> prepare($query);
+		$executeQuery = $statement -> execute();
+		
+		if ($executeQuery) {
+			return $statement -> fetch();
+		}
+}
+
     function getAllCars($pdo) {
 	    $sql = "SELECT * FROM cars";
 	    $stmt = $pdo->prepare($sql);
@@ -75,21 +88,14 @@ function deleteCars($pdo, $car_id) {
 	$deleteStmt = $pdo->prepare($deleteCars);
 	$executeDeleteQuery = $deleteStmt->execute([$car_id]);
 
-	if ($executeDeleteQuery) {
-		$sql = "DELETE FROM cars WHERE car_id = ?";
-		$stmt = $pdo->prepare($sql);
-		$executeQuery = $stmt->execute([$car_id]);
-
-		if ($executeQuery) {
+		if ($executeDeleteQuery) {
 			$carID = getNewestCarID($pdo)['car_id'];
       $carData = getCarsByID($pdo, $carID);
-			logCarAction($pdo, "REMOVED", $carData['user_id'], $carID, $_SESSION['username']);
+			logCarAction($pdo, "DELETED", $car_id, $_SESSION['username']);
 			return true;
 		}
 
 	}
-	
-}
 
 function getRentalsByCarID($pdo, $car_id) {
 	
@@ -122,8 +128,8 @@ function insertRentals($pdo, $customer_name, $customer_licenseNo, $car_id, $rent
 	$stmt = $pdo->prepare($sql);
 	$executeQuery = $stmt->execute([$customer_name, $customer_licenseNo, $car_id, $rental_date, $return_date, $total_price]);
 		if ($executeQuery){
-			$rentalID = getNewestCarID($pdo)['rental_id'];
-			$rentalData = getCarsByID($pdo, $rentalID);
+			$rentalID = getNewestRentalID($pdo)['rental_id'];
+			$rentalData = getRentalsByID($pdo, $rentalID);
 			logRentalAction($pdo, "ADDED", $rentalID, $_SESSION['username']);
 			return true;
 	}
@@ -173,8 +179,8 @@ function updateRentals($pdo, $customer_name, $customer_licenseNo, $return_date, 
 	$executeQuery = $stmt->execute([$customer_name, $customer_licenseNo, $return_date, $rental_date, $total_price, $rental_id]);
 
 	if ($executeQuery){
-		$rentalID = getNewestCarID($pdo)['rental_id'];
-		$rentalData = getCarsByID($pdo, $rentalID);
+		$rentalID = getNewestRentalID($pdo)['rental_id'];
+		$rentalData = getRentalsByID($pdo, $rentalID);
 		logRentalAction($pdo, "UPDATED", $rentalID, $_SESSION['username']);
 		return true;
 	}
@@ -184,10 +190,11 @@ function deleteRental($pdo, $rental_id) {
 	$sql = "DELETE FROM rentals WHERE rental_id = ?";
 	$stmt = $pdo->prepare($sql);
 	$executeQuery = $stmt->execute([$rental_id]);
+
 	if ($executeQuery){
-		$rentalID = getNewestCarID($pdo)['rental_id'];
-		$rentalData = getCarsByID($pdo, $rentalID);
-		logRentalAction($pdo, "DELETED", $rentalID, $_SESSION['username']);
+		$rentalID = getNewestRentalID($pdo)['rental_id'];
+		$rentalData = getRentalsByID($pdo, $rentalID);
+		logRentalAction($pdo, "DELETED", $rental_id, $_SESSION['username']);
 		return true;
 	}
 }
@@ -236,14 +243,17 @@ function getUserByID($pdo, $user_id) {
 	return null; 
 }
 
-function addUser($pdo, $username, $password, $hashed_password, $first_name, $last_name, $age, $birthdate) {
+function addUser($pdo, $username, $hashed_password, $first_name, $last_name, $age, $birthdate, $password) {
 	if (checkUsernameExistence($pdo, $username)) {
 			return "UsernameAlreadyExists";
 	}
+	
 	if (checkUserExistence($pdo, $first_name, $last_name, $age, $birthdate)) {
 			return "UserAlreadyExists";
 	}
-	if (!validatePassword($password)) {
+	
+
+	if (!validatePassword($password)) { 
 			return "InvalidPassword";
 	}
 
@@ -258,6 +268,8 @@ function addUser($pdo, $username, $password, $hashed_password, $first_name, $las
 	if ($executeQuery1 && $executeQuery2) {
 			return "registrationSuccess";
 	}
+	
+	return null; 
 }
 
 function getAllUsers($pdo) {
@@ -298,11 +310,14 @@ function checkUserExistence($pdo, $first_name, $last_name, $age, $birthdate) {
 }
 
 function validatePassword($password) {
+	
 	if (strlen($password) < 8) {
+			return false; 
 	}
 
 	$hasLower = $hasUpper = $hasNumber = false;
 
+	
 	foreach (str_split($password) as $char) {
 			if (ctype_lower($char)) {
 					$hasLower = true;
@@ -312,11 +327,13 @@ function validatePassword($password) {
 					$hasNumber = true;
 			}
 
+			
 			if ($hasLower && $hasUpper && $hasNumber) {
 					return true;
 			}
 	}
-	return false;
+
+	return false; 
 }
 
 //Car and Rental LOGS

@@ -17,7 +17,7 @@ $car = getCarsByID($pdo, $_GET['car_id']);
     <h1>Rentals for <?php echo $car['brand'] . ' ' . $car['model']; ?></h1>
     <h2>Add New Rental</h2>
     
-    <input type="submit" value="Rental Logs" onclick="window.location.href='rental_logs.php'">
+    <input type="submit" value="Rental Logs" onclick="window.location.href='rental_logs.php?car_id=<?php echo $car['car_id']; ?>'">
 
     <form action="core/handleForms.php?car_id=<?php echo $_GET['car_id']; ?>" method="POST">
     

@@ -7,15 +7,6 @@
   text-align: center;
 }
 
-.username{
-  width: 30%;
-  border-radius: 20px;
-}
-
-.password{
-  width: 30%;
-  border-radius: 20px;
-}
 
 .login{
   width: 20%;
@@ -34,3 +25,12 @@
   display: inline-block
 }
 
+.title{
+  font-size: 2em;           
+  color: #2c3e50;          
+  text-align: center;      
+  margin: 20px 0;         
+  padding: 10px;          
+  background-color: #ecf0f1;
+  border-radius: 5px;     
+}
